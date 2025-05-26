@@ -1,7 +1,7 @@
 import type { JSX } from "react"
 import { useAppDispatch } from "@/app/hooks"
 import { Button } from "@/components/ui/button"
-import { NUMBER_OF_SQUARES } from "../const"
+import { NUMBER_OF_SQUARES } from "../gameLogic"
 import { exitGame } from "../ticTacToeSlice"
 import { Square } from "../Square"
 

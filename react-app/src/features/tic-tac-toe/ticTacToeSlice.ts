@@ -1,6 +1,6 @@
 import { createAppSlice } from "@/app/createAppSlice"
-import { getBit } from "@/utils/bit-utils"
 import type { PayloadAction } from "@reduxjs/toolkit/react"
+import * as gameLogic from "./gameLogic"
 
 export enum GameStatus {
   MainMenu,
@@ -19,16 +19,23 @@ export type Player = {
   playerType: PlayerType
 }
 
+type PlayMovePayload = {
+  playerType: PlayerType
+  position: number
+}
+
 export type TicTacToeSliceState = {
   gameStatus: GameStatus
   players: Player[]
   bitboards: number[]
+  turnNumber: number
 }
 
 const initialState: TicTacToeSliceState = {
   gameStatus: GameStatus.MainMenu,
   players: [],
   bitboards: [0, 0],
+  turnNumber: 0,
 }
 
 export const ticTacToeSlice = createAppSlice({
@@ -42,21 +49,62 @@ export const ticTacToeSlice = createAppSlice({
     exitGame: create.reducer(() => {
       return initialState
     }),
+    playMove: create.reducer(
+      (state, action: PayloadAction<PlayMovePayload>) => {
+        // Player should only be able to make a move when the game is started and ongoing
+        if (state.gameStatus !== GameStatus.GameStarted) {
+          return
+        }
+
+        // Destructure payload
+        const {
+          playerType,
+          position,
+        }: { playerType: PlayerType; position: number } = action.payload
+
+        // Get active player id
+        const activePlayerId = gameLogic.getActivePlayerIdFromTurn(
+          state.turnNumber,
+        )
+
+        // Ensure the player type passed in matches the active player's player type
+        // Human cannot play on bot's turn
+        if (playerType !== state.players[activePlayerId].playerType) {
+          return
+        }
+
+        // Ensure move is valid
+        if (gameLogic.isValidMove(state.bitboards, position)) {
+          // Play move and update player bitboard
+          state.bitboards[activePlayerId] = gameLogic.playMove(
+            state.bitboards[activePlayerId],
+            position,
+          )
+          state.turnNumber++
+        }
+      },
+    ),
   }),
   selectors: {
     selectGameStatus: state => state.gameStatus,
 
+    selectActivePlayer: state =>
+      state.players[gameLogic.getActivePlayerIdFromTurn(state.turnNumber)],
+
+    selectActivePlayerId: state =>
+      gameLogic.getActivePlayerIdFromTurn(state.turnNumber),
+
     // returns player id if square is occupied, else return null
     selectSquare: (state, position: number) => {
-      for (let i = 0; i < state.bitboards.length; i++) {
-        if (getBit(state.bitboards[i], position)) {
-          return i
-        }
-      }
-      return null
+      return gameLogic.getSquare(state.bitboards, position)
     },
   },
 })
 
-export const { startGame, exitGame } = ticTacToeSlice.actions
-export const { selectGameStatus, selectSquare } = ticTacToeSlice.selectors
+export const { startGame, exitGame, playMove } = ticTacToeSlice.actions
+export const {
+  selectGameStatus,
+  selectActivePlayer,
+  selectActivePlayerId,
+  selectSquare,
+} = ticTacToeSlice.selectors
