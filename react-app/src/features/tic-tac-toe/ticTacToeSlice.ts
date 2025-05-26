@@ -29,6 +29,7 @@ export type TicTacToeSliceState = {
   players: Player[]
   bitboards: number[]
   turnNumber: number
+  winner: gameLogic.Winner
 }
 
 const initialState: TicTacToeSliceState = {
@@ -36,6 +37,7 @@ const initialState: TicTacToeSliceState = {
   players: [],
   bitboards: [0, 0],
   turnNumber: 0,
+  winner: gameLogic.Winner.None,
 }
 
 export const ticTacToeSlice = createAppSlice({
@@ -80,7 +82,14 @@ export const ticTacToeSlice = createAppSlice({
             state.bitboards[activePlayerId],
             position,
           )
-          state.turnNumber++
+
+          // Check for game end
+          state.winner = gameLogic.getWinner(state.bitboards, activePlayerId)
+          if (state.winner === gameLogic.Winner.None) {
+            state.turnNumber++
+          } else {
+            state.gameStatus = GameStatus.GameEnded
+          }
         }
       },
     ),
@@ -93,6 +102,8 @@ export const ticTacToeSlice = createAppSlice({
 
     selectActivePlayerId: state =>
       gameLogic.getActivePlayerIdFromTurn(state.turnNumber),
+
+    selectWinner: state => state.winner,
 
     // returns player id if square is occupied, else return null
     selectSquare: (state, position: number) => {
@@ -107,4 +118,5 @@ export const {
   selectActivePlayer,
   selectActivePlayerId,
   selectSquare,
+  selectWinner,
 } = ticTacToeSlice.selectors

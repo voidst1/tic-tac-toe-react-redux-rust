@@ -10,3 +10,10 @@ export function clearBit(a: number, position: number): number {
 export function flipBit(a: number, position: number): number {
   return a ^ (1 << position)
 }
+
+export function mergeWithBitwiseOr(numbers: number[]): number {
+  if (numbers.length === 0) {
+    throw new Error("Array must contain at least one number.")
+  }
+  return numbers.reduce((acc, curr) => acc | curr)
+}
