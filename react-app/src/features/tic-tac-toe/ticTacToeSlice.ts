@@ -1,6 +1,7 @@
 import { createAppSlice } from "@/app/createAppSlice"
-import type { PayloadAction } from "@reduxjs/toolkit/react"
+import { createAsyncThunk, type PayloadAction } from "@reduxjs/toolkit/react"
 import * as gameLogic from "./gameLogic"
+import type { RootState } from "@/app/store"
 
 export enum GameStatus {
   MainMenu,
@@ -23,6 +24,28 @@ type PlayMovePayload = {
   playerType: PlayerType
   position: number
 }
+
+function getRandomMove(bitboards: number[]): Promise<number> {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const move = gameLogic.getRandomMove(bitboards)
+      resolve(move)
+    }, 1500)
+  })
+}
+
+export const playBotMove = createAsyncThunk(
+  "ticTacToe/playBotMove",
+  async (_arg, { dispatch, getState }) => {
+    const state = getState() as RootState
+    dispatch(
+      playMove({
+        position: await getRandomMove(state.ticTacToe.bitboards),
+        playerType: PlayerType.Bot,
+      }),
+    )
+  },
+)
 
 export type TicTacToeSliceState = {
   gameStatus: GameStatus

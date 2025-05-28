@@ -1,20 +1,40 @@
-import type { JSX } from "react"
+import { useEffect, useState, type JSX } from "react"
 import { useAppDispatch, useAppSelector } from "@/app/hooks"
 import { Button } from "@/components/ui/button"
 import { NUMBER_OF_SQUARES, Winner } from "../gameLogic"
-import { exitGame, selectActivePlayerId, selectWinner } from "../ticTacToeSlice"
+import type { Player } from "../ticTacToeSlice"
+import {
+  exitGame,
+  playBotMove,
+  PlayerType,
+  selectActivePlayer,
+  selectWinner,
+} from "../ticTacToeSlice"
 import { Square } from "../Square"
 
 export const GamePage = (): JSX.Element => {
   const winner: Winner = useAppSelector(state => selectWinner(state))
-  const activePlayerId: number = useAppSelector(state =>
-    selectActivePlayerId(state),
+  const activePlayer: Player = useAppSelector(state =>
+    selectActivePlayer(state),
   )
+  const [isBotThinking, setIsBotThinking] = useState(false)
+
   const dispatch = useAppDispatch()
+
+  useEffect(() => {
+    if (activePlayer.playerType === PlayerType.Bot) {
+      setIsBotThinking(true)
+      void dispatch(playBotMove())
+        .unwrap()
+        .then(() => {
+          setIsBotThinking(false)
+        })
+    }
+  }, [activePlayer.playerType, dispatch])
 
   function getTurnText(): string {
     if (winner === Winner.None) {
-      return `Player ${String(activePlayerId + 1)}'s Turn`
+      return `Player ${String(activePlayer.id + 1)}'s Turn`
     }
     return ""
   }
@@ -34,7 +54,11 @@ export const GamePage = (): JSX.Element => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-svh">
-      <div className="py-2 text-gray-800">{getTurnText()}</div>
+      {isBotThinking ? (
+        <div className="py-2 text-gray-800">Bot is thinking</div>
+      ) : (
+        <div className="py-2 text-gray-800">{getTurnText()}</div>
+      )}
       <div className="py-2 text-gray-800">{getResultText()}</div>
 
       <div className="grid grid-cols-3 gap-2">

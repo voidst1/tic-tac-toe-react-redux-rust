@@ -1,3 +1,4 @@
+import { getRandomElement } from "@/lib/utils"
 import { getBit, mergeWithBitwiseOr, setBit } from "@/utils/bit-utils"
 
 export const NUMBER_OF_PLAYERS = 2
@@ -75,4 +76,25 @@ export function getWinner(bitboards: number[], activePlayerId: number): Winner {
   } else {
     return Winner.None
   }
+}
+
+export function getLegalMoves(bitboards: number[]): number[] {
+  const bitboard: number = mergeWithBitwiseOr(bitboards)
+  const legalMoves: number[] = []
+  for (let pos = 0; pos < NUMBER_OF_SQUARES; pos++) {
+    if (((bitboard >> pos) & 1) === 0) {
+      legalMoves.push(pos)
+    }
+  }
+  return legalMoves
+}
+
+export function getRandomMove(bitboards: number[]): number {
+  const legalMoves = getLegalMoves(bitboards)
+  return getRandomElement(legalMoves) ?? 0
+}
+
+export function getFirstAvailableMove(bitboards: number[]): number {
+  const legalMoves = getLegalMoves(bitboards)
+  return legalMoves[0]
 }
