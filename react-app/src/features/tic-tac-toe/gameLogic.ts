@@ -1,5 +1,6 @@
 import { getRandomElement } from "@/lib/utils"
 import { getBit, mergeWithBitwiseOr, setBit } from "@/utils/bit-utils"
+import * as wasm from "wasm-tic-tac-toe"
 
 export const NUMBER_OF_PLAYERS = 2
 export const NUMBER_OF_SQUARES = 3 * 3
@@ -97,4 +98,8 @@ export function getRandomMove(bitboards: number[]): number {
 export function getFirstAvailableMove(bitboards: number[]): number {
   const legalMoves = getLegalMoves(bitboards)
   return legalMoves[0]
+}
+
+export function getFirstAvailableMoveWasm(bitboards: number[]): number {
+  return wasm.get_first_available_move(bitboards[0], bitboards[1])
 }

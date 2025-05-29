@@ -36,11 +36,12 @@ function getRandomMove(bitboards: number[]): Promise<number> {
 
 export const playBotMove = createAsyncThunk(
   "ticTacToe/playBotMove",
-  async (_arg, { dispatch, getState }) => {
+  /*async*/ (_arg, { dispatch, getState }) => {
     const state = getState() as RootState
     dispatch(
       playMove({
-        position: await getRandomMove(state.ticTacToe.bitboards),
+        //position: await getRandomMove(state.ticTacToe.bitboards),
+        position: gameLogic.getFirstAvailableMove(state.ticTacToe.bitboards),
         playerType: PlayerType.Bot,
       }),
     )
