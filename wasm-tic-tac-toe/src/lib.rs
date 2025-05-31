@@ -169,10 +169,10 @@ pub fn get_mcts_move(board_x: u16, board_o: u16, current_player: usize) -> u8 {
 }
 
 #[wasm_bindgen]
-pub fn get_first_available_move(bitboard1: u16, bitboard2: u16) -> u8 {
+pub fn get_first_available_move(board_x: u16, board_o: u16) -> u8 {
     for pos in 0..9 {
         let mask = 1 << pos;
-        if (bitboard1 & mask) == 0 && (bitboard2 & mask) == 0 {
+        if (board_x & mask) == 0 && (board_o & mask) == 0 {
             return pos;
         }
     }
