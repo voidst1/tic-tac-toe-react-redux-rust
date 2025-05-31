@@ -25,6 +25,7 @@ type PlayMovePayload = {
   position: number
 }
 
+/*
 function getRandomMove(bitboards: number[]): Promise<number> {
   return new Promise(resolve => {
     setTimeout(() => {
@@ -33,6 +34,7 @@ function getRandomMove(bitboards: number[]): Promise<number> {
     }, 1500)
   })
 }
+*/
 
 function getMctsMove(
   bitboard0: number,
