@@ -18,6 +18,9 @@ wasm-bindgen = "0.2.84"
 # all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
 # code size when deploying.
 console_error_panic_hook = { version = "0.1.7", optional = true }
+#mcts-rs = "0.1.0"
+mcts-rs = { git = "https://github.com/PaytonWebber/mcts-rs.git", rev = "c9d879aee17829f852507477e13d8a6848cdccf7" }
+getrandom = { version = "0.2", features = ["js"] }
 
 [dev-dependencies]
 wasm-bindgen-test = "0.3.34"

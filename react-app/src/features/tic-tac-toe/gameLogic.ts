@@ -103,3 +103,11 @@ export function getFirstAvailableMove(bitboards: number[]): number {
 export function getFirstAvailableMoveWasm(bitboards: number[]): number {
   return wasm.get_first_available_move(bitboards[0], bitboards[1])
 }
+
+export function getMctsMoveWasm(
+  bitboard1: number,
+  bitboard2: number,
+  currentPlayer: number,
+): number {
+  return wasm.get_mcts_move(bitboard1, bitboard2, currentPlayer)
+}

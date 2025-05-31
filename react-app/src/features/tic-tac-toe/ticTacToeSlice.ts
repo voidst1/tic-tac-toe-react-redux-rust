@@ -34,14 +34,35 @@ function getRandomMove(bitboards: number[]): Promise<number> {
   })
 }
 
+function getMctsMove(
+  bitboard0: number,
+  bitboard1: number,
+  currentPlayer: number,
+): Promise<number> {
+  return new Promise(resolve => {
+    setTimeout(() => {
+      const move = gameLogic.getMctsMoveWasm(
+        bitboard0,
+        bitboard1,
+        currentPlayer,
+      )
+      resolve(move)
+    }, 1500)
+  })
+}
+
 export const playBotMove = createAsyncThunk(
   "ticTacToe/playBotMove",
-  /*async*/ (_arg, { dispatch, getState }) => {
+  async (_arg, { dispatch, getState }) => {
     const state = getState() as RootState
+    const { bitboards } = state.ticTacToe
     dispatch(
       playMove({
-        //position: await getRandomMove(state.ticTacToe.bitboards),
-        position: gameLogic.getFirstAvailableMove(state.ticTacToe.bitboards),
+        position: await getMctsMove(
+          bitboards[0],
+          bitboards[1],
+          selectActivePlayerId(state),
+        ),
         playerType: PlayerType.Bot,
       }),
     )
