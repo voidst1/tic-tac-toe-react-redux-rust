@@ -1,0 +1,20 @@
+{
+  "name": "wasm-tic-tac-toe",
+  "type": "module",
+  "collaborators": [
+    "JS <dev@voidst.one>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "wasm_tic_tac_toe_bg.wasm",
+    "wasm_tic_tac_toe.js",
+    "wasm_tic_tac_toe_bg.js",
+    "wasm_tic_tac_toe.d.ts"
+  ],
+  "main": "wasm_tic_tac_toe.js",
+  "types": "wasm_tic_tac_toe.d.ts",
+  "sideEffects": [
+    "./wasm_tic_tac_toe.js",
+    "./snippets/*"
+  ]
+}
